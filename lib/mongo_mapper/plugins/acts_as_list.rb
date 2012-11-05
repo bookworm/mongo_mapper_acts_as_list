@@ -169,6 +169,7 @@ module MongoMapper
 
         # Returns the bottom item
         def bottom_item(except = nil)
+          conditions = scope_condition
           conditions.merge!({:id.ne => except.id}) if except
           acts_as_list_class.where(conditions).sort(position_column.to_sym.desc).first
         end
