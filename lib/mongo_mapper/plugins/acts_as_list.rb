@@ -129,7 +129,7 @@ module MongoMapper
       # Return the next higher item in the list.
       def higher_item
         return nil unless in_list?
-        conditions = scope_condition if scope_condition
+        conditions = scope_condition
         conditions.merge!( { position_column.to_sym => send(position_column).to_i-1 } )
         acts_as_list_class.where(conditions).first
       end
@@ -137,7 +137,7 @@ module MongoMapper
       # Return the next lower item in the list.
       def lower_item
         return nil unless in_list?
-        conditions = scope_condition if scope_condition
+        conditions = scope_condition
         conditions.merge!( { position_column.to_sym => send(position_column).to_i+1 } )
         acts_as_list_class.where(conditions).first
       end
@@ -157,7 +157,7 @@ module MongoMapper
         end
 
         def scope_condition
-          nil
+          {}
         end
           
         # Returns the bottom position number in the list.
@@ -185,7 +185,7 @@ module MongoMapper
 
         # This has the effect of moving all the higher items up one.
         def decrement_positions_on_higher_items(position)
-          conditions = scope_condition if scope_condition
+          conditions = scope_condition
           conditions.merge!( { position_column.to_sym.lt => position } )
           acts_as_list_class.decrement( conditions, { position_column.to_sym => 1 } )
         end
@@ -193,7 +193,7 @@ module MongoMapper
         # This has the effect of moving all the lower items up one.
         def decrement_positions_on_lower_items
           return unless in_list?
-          conditions = scope_condition if scope_condition
+          conditions = scope_condition
           conditions.merge!( { position_column.to_sym.gt => send(position_column).to_i } )
           acts_as_list_class.decrement( conditions, { position_column => 1 } )
         end       
@@ -201,21 +201,21 @@ module MongoMapper
         # This has the effect of moving all the higher items down one.
         def increment_positions_on_higher_items
           return unless in_list?
-          conditions = scope_condition if scope_condition
+          conditions = scope_condition
           conditions.merge!( { position_column.to_sym.lt => send(position_column).to_i } )
           acts_as_list_class.increment( conditions, { position_column.to_sym => 1 } )
         end
 
         # This has the effect of moving all the lower items down one.
         def increment_positions_on_lower_items(position)
-          conditions = scope_condition if scope_condition
+          conditions = scope_condition
           conditions.merge!( { position_column.to_sym.gte => position } )
           acts_as_list_class.increment( conditions, { position_column.to_sym => 1 } )
         end
 
         # Increments position (<tt>position_column</tt>) of all items in the list.
         def increment_positions_on_all_items
-          conditions = scope_condition if scope_condition
+          conditions = scope_condition
           acts_as_list_class.increment( conditions, { position_column.to_sym => 1 } )
         end
 
